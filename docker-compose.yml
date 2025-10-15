@@ -1,1 +1,43 @@
 
+version: "3.8"
+services:
+
+  backend:
+    build: ./backend
+    container_name: t-hypervm-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/usr/src/app
+    working_dir: /usr/src/app
+    command: node server.js
+    environment:
+      - NODE_ENV=development
+
+  frontend:
+    build: ./frontend
+    container_name: t-hypervm-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/usr/src/app
+    working_dir: /usr/src/app
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+
+  postgres:
+    image: postgres:15
+    container_name: t-hypervm-db
+    restart: always
+    environment:
+      POSTGRES_USER: hypervm
+      POSTGRES_PASSWORD: hypervm123
+      POSTGRES_DB: hypervm
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
